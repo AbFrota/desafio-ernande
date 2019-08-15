@@ -22,13 +22,29 @@ def index():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-  
+  temperature_in =request. form['temperature_in']
+  temperature = request. form['temperature']
+  humidity = request. form['humidity']
+  gas = request. form['gas']
+
+  dados = {
+    'temperature_in' : temperature_in,
+    'temperature' : temperature,
+    'humidity' : humidity,
+    'gas' : gas
+  }
   #dados = jsonify(temperature_in,temperature,humidity,gas)
-  dados = request.get_json(force=True)
+  #dados = request.get_json(force=True)
+  #predicao = modelo.predict(np.array([temperature_in,temperature,humidity,gas])
   predicao = modelo.predict(np.array([list(dados.values())]))
   resultado = predicao[0]
-  resposta = {'Cenario': int(resultado)}
-  return jsonify(resposta)
+  #resposta = {'Cenario': int(resultado)}
+  if resultado ==0:
+    cenario = 'Normal'
+  elif resultado == 1:
+    cenario = 'Crítico'
+  return render_template('index.html', result = cenario)
+  # jsonify(resposta)
 
   ### subindo server
 
