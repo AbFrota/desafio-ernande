@@ -5,6 +5,17 @@ import os
 
 app = Flask(__name__)
 
+
+class Leitura:
+    def __init__(self, temperature_in, temperature, humidity,gas,cenario):
+        self.temperature_in = temperature_in
+        self.temperature = temperature
+        self.humidity = humidity
+        self.gas = gas
+        self.cenario = cenario
+
+lista = []
+
 #abre o arquivo com o modelo treinado
 
 modelo = pickle.load(open('notebook/modelo_tree.pk1','rb'))
@@ -39,11 +50,16 @@ def predict():
   predicao = modelo.predict(np.array([list(dados.values())]))
   resultado = predicao[0]
   #resposta = {'Cenario': int(resultado)}
+
+  # cria o objeto leitura
+  leitura = Leitura(temperature_in,temperature,humidity,gas,resultado)
+  lista.append(leitura)
+
   if resultado ==0:
     cenario = 'Normal'
   elif resultado == 1:
     cenario = 'Crítico'
-  return render_template('index.html', result = cenario)
+  return render_template('index.html', result = cenario,  leituras=lista)
   # jsonify(resposta)
 
   ### subindo server
